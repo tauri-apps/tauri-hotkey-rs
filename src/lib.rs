@@ -146,7 +146,7 @@ impl Drop for HotkeyManager {
 
 static REGEX_HOTKEY_PATTERN: Lazy<regex::Regex> = Lazy::new(|| {
   regex::Regex::new(
-        r"^(?i)(?:(CTRL|SHIFT|ALT|SUPER)+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)+){0,1}(\w+)$",
+        r"^(?i)(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(\w+)$",
     ).unwrap()
 });
 
