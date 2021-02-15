@@ -84,7 +84,6 @@ pub mod keys {
   pub const EREOF: u32 = winuser::VK_EREOF as u32;
   pub const PLAY: u32 = winuser::VK_PLAY as u32;
   pub const ZOOM: u32 = winuser::VK_ZOOM as u32;
-  pub const VK_PA1: u32 = winuser::VK_PA1 as u32;
   pub const OEM_PLUS: u32 = winuser::VK_OEM_PLUS as u32;
   pub const OEM_MINUS: u32 = winuser::VK_OEM_MINUS as u32;
   pub const OEM_COMMA: u32 = winuser::VK_OEM_COMMA as u32;
