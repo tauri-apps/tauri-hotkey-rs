@@ -118,7 +118,7 @@ pub mod keys {
   pub const X: u32 = 'X' as u32;
   pub const Y: u32 = 'Y' as u32;
   pub const Z: u32 = 'Z' as u32;
-  pub const EQUAL: u32 = winuser::VM_OEM_PLUS as u32;
+  pub const EQUAL: u32 = winuser::VK_OEM_PLUS as u32;
   pub const MINUS: u32 = winuser::VK_OEM_MINUS as u32;
   pub const SINGLE_QUOTE: u32 = winuser::VK_OEM_7 as u32;
   pub const COMMA: u32 = winuser::VK_OEM_COMMA as u32;
