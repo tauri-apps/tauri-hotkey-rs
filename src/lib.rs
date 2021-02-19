@@ -354,11 +354,13 @@ pub enum Key {
   UP = keys::ARROW_UP,
   DOWN = keys::ARROW_DOWN,
   PRINTSCREEN = keys::PRINT_SCREEN,
+  #[cfg(not(target_os = "macos"))]
   INSERT = keys::INSERT,
   CLEAR = keys::CLEAR,
   DELETE = keys::DELETE,
   SCROLLLOCK = keys::SCROLL_LOCK,
   HELP = keys::HELP,
+  #[cfg(not(target_os = "macos"))]
   NUMLOCK = keys::NUMLOCK,
   // Media
   VOLUMEMUTE = keys::VOLUME_MUTE,

@@ -35,11 +35,11 @@ pub mod keys {
   pub const ARROW_UP: u32 = 0x7E;
   pub const ARROW_DOWN: u32 = 0x7D;
   pub const PRINT_SCREEN: u32 = 0xDEAD;
-  pub const INSERT: u32 = 0x72;
   pub const DELETE: u32 = 0x75;
   pub const SCROLL_LOCK: u32 = 0x6B; // F14
   pub const HELP: u32 = 0x72;
-  pub const NUMLOCK: u32 = 0;
+  // TODO
+  // pub const NUMLOCK: u32 = 0;
   // Media
   pub const VOLUME_MUTE: u32 = 0x4A;
   pub const VOLUME_DOWN: u32 = 0x49;
