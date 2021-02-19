@@ -246,7 +246,7 @@ pub fn parse_hotkey(hotkey_string: &str) -> Result<Hotkey> {
           shifted = true;
           key = Some(Key::CLOSEBRACKET);
         }
-        "+" => {
+        "+" | "PLUS" => {
           shifted = true;
           key = Some(Key::EQUAL);
         }
