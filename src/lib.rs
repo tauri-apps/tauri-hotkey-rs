@@ -287,7 +287,7 @@ pub fn parse_hotkey(hotkey_string: &str) -> Result<Hotkey> {
     }
   }
 
-  if shifted {
+  if shifted && !modifiers.contains(&Modifier::SHIFT) {
     modifiers.push(Modifier::SHIFT);
   }
 
