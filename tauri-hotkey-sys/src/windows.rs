@@ -41,10 +41,6 @@ pub mod keys {
   pub const CLEAR: u32 = winuser::VK_CLEAR as u32;
   pub const INSERT: u32 = winuser::VK_INSERT as u32;
   pub const DELETE: u32 = winuser::VK_DELETE as u32;
-  pub const PAUSE: u32 = winuser::VK_PAUSE as u32;
-  pub const CANCEL: u32 = winuser::VK_CANCEL as u32;
-  pub const SELECT: u32 = winuser::VK_SELECT as u32;
-  pub const EXECUTE: u32 = winuser::VK_EXECUTE as u32;
   pub const SCROLL_LOCK: u32 = winuser::VK_SCROLL as u32;
   pub const HELP: u32 = winuser::VK_HELP as u32;
   pub const NUMLOCK: u32 = winuser::VK_NUMLOCK as u32;
@@ -75,7 +71,6 @@ pub mod keys {
   pub const SUBTRACT: u32 = winuser::VK_SUBTRACT as u32;
   pub const MULTIPLY: u32 = winuser::VK_MULTIPLY as u32;
   pub const DIVIDE: u32 = winuser::VK_DIVIDE as u32;
-  pub const SEPERATOR: u32 = winuser::VK_SEPARATOR as u32;
   pub const DECIMAL: u32 = winuser::VK_DECIMAL as u32;
   pub const NUMPAD0: u32 = winuser::VK_NUMPAD0 as u32;
   pub const NUMPAD1: u32 = winuser::VK_NUMPAD1 as u32;
@@ -97,7 +92,6 @@ pub mod keys {
   pub const KEY_7: u32 = '7' as u32;
   pub const KEY_8: u32 = '8' as u32;
   pub const KEY_9: u32 = '9' as u32;
-  pub const MINUS: u32 = winuser::VK_OEM_MINUS as u32;
   pub const A: u32 = 'A' as u32;
   pub const B: u32 = 'B' as u32;
   pub const C: u32 = 'C' as u32;
@@ -124,9 +118,17 @@ pub mod keys {
   pub const X: u32 = 'X' as u32;
   pub const Y: u32 = 'Y' as u32;
   pub const Z: u32 = 'Z' as u32;
-  pub const QUOTE: u32 = winuser::VK_OEM_7 as u32;
+  pub const EQUAL: u32 = winuser::VM_OEM_PLUS as u32;
+  pub const MINUS: u32 = winuser::VK_OEM_MINUS as u32;
+  pub const SINGLE_QUOTE: u32 = winuser::VK_OEM_7 as u32;
   pub const COMMA: u32 = winuser::VK_OEM_COMMA as u32;
   pub const PERIOD: u32 = winuser::VK_OEM_PERIOD as u32;
+  pub const SEMICOLON: u32 = winuser::VK_OEM_1 as u32;
+  pub const SLASH: u32 = winuser::VK_OEM_2 as u32;
+  pub const OPEN_QUOTE: u32 = winuser::VK_OEM_3 as u32;
+  pub const OPEN_BRACKET: u32 = winuser::VK_OEM_4 as u32;
+  pub const BACK_SLASH: u32 = winuser::VK_OEM_5 as u32;
+  pub const CLOSE_BRACKET: u32 = winuser::VK_OEM_6 as u32;
 }
 
 type ListenerId = i32;

@@ -73,7 +73,7 @@ impl HotkeyManager {
       }
       Entry::Vacant(entry) => {
         GLOBAL_LISTENER.lock().unwrap().register_hotkey(
-          ListenerHotkey::new(hotkey.modifier_as_flag(), hotkey.key as u32),
+          ListenerHotkey::new(hotkey.modifiers_as_flag(), hotkey.keys_as_flag()),
           move || {
             if let Some(entry) = GLOBAL_HOTKEY_MAP.lock().unwrap().get_mut(&hotkey) {
               for (_, cb) in entry.iter_mut() {
@@ -114,8 +114,8 @@ impl HotkeyManager {
             .lock()
             .unwrap()
             .unregister_hotkey(ListenerHotkey::new(
-              hotkey.modifier_as_flag(),
-              hotkey.key as u32,
+              hotkey.modifiers_as_flag(),
+              hotkey.keys_as_flag(),
             ))?;
         }
       }
@@ -154,8 +154,9 @@ pub fn parse_hotkey(hotkey_string: &str) -> Result<Hotkey> {
   let caps: regex::Captures = REGEX_HOTKEY_PATTERN
     .captures(hotkey_string)
     .ok_or_else(|| Error::InvalidHotkey("regex dind't match".to_string()))?;
-  let mut modifier = Vec::new();
-  let mut key: Option<Key> = None;
+  let mut modifiers = Vec::new();
+  let mut keys = Vec::new();
+  let mut shifted = false;
   for caps in caps.iter().skip(1) {
     if let Some(caps) = caps {
       let mut mat = caps.as_str().to_uppercase();
@@ -163,37 +164,154 @@ pub fn parse_hotkey(hotkey_string: &str) -> Result<Hotkey> {
         mat = format!("KEY_{}", mat);
       }
       if let Ok(res) = Modifier::from_str(&mat) {
-        modifier.push(res);
+        modifiers.push(res);
         continue;
       }
-      if key.is_some() {
-        return Err(Error::InvalidHotkey(
-          "hotkey has alread a key specified".to_string(),
-        ));
+      let mut key = None;
+      // shift conversions
+      match mat.as_str() {
+        ")" => {
+          shifted = true;
+          key = Some(Key::KEY_0);
+        }
+        "!" => {
+          shifted = true;
+          key = Some(Key::KEY_1);
+        }
+        "@" => {
+          shifted = true;
+          key = Some(Key::KEY_2);
+        }
+        "#" => {
+          shifted = true;
+          key = Some(Key::KEY_3);
+        }
+        "$" => {
+          shifted = true;
+          key = Some(Key::KEY_4);
+        }
+        "%" => {
+          shifted = true;
+          key = Some(Key::KEY_5);
+        }
+        "^" => {
+          shifted = true;
+          key = Some(Key::KEY_6);
+        }
+        "&" => {
+          shifted = true;
+          key = Some(Key::KEY_7);
+        }
+        "*" => {
+          shifted = true;
+          key = Some(Key::KEY_8);
+        }
+        "(" => {
+          shifted = true;
+          key = Some(Key::KEY_9);
+        }
+        ":" => {
+          shifted = true;
+          key = Some(Key::SEMICOLON);
+        }
+        "<" => {
+          shifted = true;
+          key = Some(Key::COMMA);
+        }
+        ">" => {
+          shifted = true;
+          key = Some(Key::PERIOD);
+        }
+        "_" => {
+          shifted = true;
+          key = Some(Key::MINUS);
+        }
+        "?" => {
+          shifted = true;
+          key = Some(Key::SLASH);
+        }
+        "~" => {
+          shifted = true;
+          key = Some(Key::OPENQUOTE);
+        }
+        "{" => {
+          shifted = true;
+          key = Some(Key::OPENBRACKET)
+        }
+        "|" => {
+          shifted = true;
+          key = Some(Key::BACKSLASH);
+        }
+        "}" => {
+          shifted = true;
+          key = Some(Key::CLOSEBRACKET);
+        }
+        "+" => {
+          shifted = true;
+          key = Some(Key::EQUAL);
+        }
+        "\"" => {
+          shifted = true;
+          key = Some(Key::SINGLEQUOTE);
+        }
+        _ => {}
       }
-      if let Ok(res) = Key::from_str(&mat) {
-        key = Some(res);
+
+      // aliases
+      if key.is_none() {
+        key = match mat.as_str() {
+          "RETURN" => Some(Key::ENTER),
+          "=" => Some(Key::EQUAL),
+          "-" => Some(Key::MINUS),
+          "'" => Some(Key::SINGLEQUOTE),
+          "," => Some(Key::COMMA),
+          "." => Some(Key::PERIOD),
+          ";" => Some(Key::SEMICOLON),
+          "/" => Some(Key::SLASH),
+          "`" => Some(Key::OPENQUOTE),
+          "[" => Some(Key::OPENBRACKET),
+          "\\" => Some(Key::BACKSLASH),
+          "]" => Some(Key::CLOSEBRACKET),
+          _ => None,
+        };
+      }
+
+      match key {
+        Some(key) => keys.push(key),
+        None => {
+          if let Ok(res) = Key::from_str(&mat) {
+            keys.push(res);
+          }
+        }
       }
     }
   }
 
-  match key {
-    Some(key) => Ok(Hotkey { modifier, key }),
-    None => Err(Error::InvalidHotkey(
+  if shifted {
+    modifiers.push(Modifier::SHIFT);
+  }
+
+  match keys.len() {
+    0 => Err(Error::InvalidHotkey(
       "hotkey has no key specified".to_string(),
     )),
+    _ => Ok(Hotkey { modifiers, keys }),
   }
 }
 
 #[derive(Debug, Deserialize, Clone, Serialize, PartialEq, Hash, Eq)]
 pub struct Hotkey {
-  pub modifier: Vec<Modifier>,
-  pub key: Key,
+  pub modifiers: Vec<Modifier>,
+  pub keys: Vec<Key>,
 }
 
 impl Hotkey {
-  pub fn modifier_as_flag(&self) -> u32 {
-    self.modifier.iter().fold(0, |acc, x| acc | (*x as u32)) as u32
+  pub fn modifiers_as_flag(&self) -> u32 {
+    self.modifiers.iter().fold(0, |acc, x| acc | (*x as u32)) as u32
+  }
+
+  pub fn keys_as_flag(&self) -> u32 {
+    self.keys.iter().fold(0, |acc, x| acc | (*x as u32)) as u32
   }
 }
 
@@ -224,36 +342,37 @@ pub enum Key {
   BACKSPACE = keys::BACKSPACE,
   TAB = keys::TAB,
   ENTER = keys::ENTER,
-  CAPS_LOCK = keys::CAPS_LOCK,
+  CAPSLOCK = keys::CAPS_LOCK,
   ESCAPE = keys::ESCAPE,
-  SPACEBAR = keys::SPACEBAR,
-  PAGE_UP = keys::PAGE_UP,
-  PAGE_DOWN = keys::PAGE_DOWN,
+  SPACE = keys::SPACEBAR,
+  PAGEUP = keys::PAGE_UP,
+  PAGEDOWN = keys::PAGE_DOWN,
   END = keys::END,
   HOME = keys::HOME,
-  ARROW_LEFT = keys::ARROW_LEFT,
-  ARROW_RIGHT = keys::ARROW_RIGHT,
-  ARROW_UP = keys::ARROW_UP,
-  ARROW_DOWN = keys::ARROW_DOWN,
-  PRINT_SCREEN = keys::PRINT_SCREEN,
+  LEFT = keys::ARROW_LEFT,
+  RIGHT = keys::ARROW_RIGHT,
+  UP = keys::ARROW_UP,
+  DOWN = keys::ARROW_DOWN,
+  PRINTSCREEN = keys::PRINT_SCREEN,
   INSERT = keys::INSERT,
   CLEAR = keys::CLEAR,
   DELETE = keys::DELETE,
-  PAUSE = keys::PAUSE,
-  CANCEL = keys::CANCEL,
-  SELECT = keys::SELECT,
-  EXECUTE = keys::EXECUTE,
-  SCROLL_LOCK = keys::SCROLL_LOCK,
+  SCROLLLOCK = keys::SCROLL_LOCK,
   HELP = keys::HELP,
   NUMLOCK = keys::NUMLOCK,
   // Media
   VOLUMEMUTE = keys::VOLUME_MUTE,
   VOLUMEDOWN = keys::VOLUME_DOWN,
   VOLUMEUP = keys::VOLUME_UP,
-  MEDIANEXT = keys::MEDIA_NEXT,
-  MEDIAPREV = keys::MEDIA_PREV,
+  #[cfg(not(target_os = "macos"))]
+  MEDIANEXTTRACK = keys::MEDIA_NEXT,
+  #[cfg(not(target_os = "macos"))]
+  MEDIAPREVIOUSTRACK = keys::MEDIA_PREV,
+  #[cfg(not(target_os = "macos"))]
   MEDIASTOP = keys::MEDIA_STOP,
+  #[cfg(not(target_os = "macos"))]
   MEDIAPLAYPAUSE = keys::MEDIA_PLAY_PAUSE,
+  #[cfg(not(target_os = "macos"))]
   LAUNCHMAIL = keys::LAUNCH_MAIL,
   // F1-F12
   F1 = keys::F1,
@@ -269,12 +388,11 @@ pub enum Key {
   F11 = keys::F11,
   F12 = keys::F12,
   // Numpad
-  ADD = keys::ADD,
-  SUBTRACT = keys::SUBTRACT,
-  MULTIPLY = keys::MULTIPLY,
-  DIVIDE = keys::DIVIDE,
-  SEPERATOR = keys::SEPERATOR,
-  DECIMAL = keys::DECIMAL,
+  NUMADD = keys::ADD,
+  NUMSUB = keys::SUBTRACT,
+  NUMMULT = keys::MULTIPLY,
+  NUMDIV = keys::DIVIDE,
+  NUMDEC = keys::DECIMAL,
   #[serde(rename = "0")]
   KEY_0 = keys::KEY_0,
   #[serde(rename = "1")]
@@ -295,8 +413,6 @@ pub enum Key {
   KEY_8 = keys::KEY_8,
   #[serde(rename = "9")]
   KEY_9 = keys::KEY_9,
-  EQUAL = keys::EQUAL,
-  MINUS = keys::MINUS,
   A = keys::A,
   B = keys::B,
   C = keys::C,
@@ -323,12 +439,28 @@ pub enum Key {
   X = keys::X,
   Y = keys::Y,
   Z = keys::Z,
+  #[serde(rename = "=")]
+  EQUAL = keys::EQUAL,
+  #[serde(rename = "-")]
+  MINUS = keys::MINUS,
   #[serde(rename = "'")]
-  QUOTE = keys::QUOTE,
+  SINGLEQUOTE = keys::SINGLE_QUOTE,
   #[serde(rename = ",")]
   COMMA = keys::COMMA,
   #[serde(rename = ".")]
   PERIOD = keys::PERIOD,
+  #[serde(rename = ";")]
+  SEMICOLON = keys::SEMICOLON,
+  #[serde(rename = "/")]
+  SLASH = keys::SLASH,
+  #[serde(rename = "`")]
+  OPENQUOTE = keys::OPEN_QUOTE,
+  #[serde(rename = "[")]
+  OPENBRACKET = keys::OPEN_BRACKET,
+  #[serde(rename = "\\")]
+  BACKSLASH = keys::BACK_SLASH,
+  #[serde(rename = "]")]
+  CLOSEBRACKET = keys::CLOSE_BRACKET,
 }
 
 impl fmt::Display for Key {
@@ -339,18 +471,32 @@ impl fmt::Display for Key {
 
 impl fmt::Display for Hotkey {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let modifier_string: String = self.modifier.iter().fold(String::new(), |all, one| {
+    let modifier_string: String = self.modifiers.iter().fold(String::new(), |all, one| {
       if !all.is_empty() {
-        format!("{}-{}", all, one)
+        format!("{}+{}", all, one)
       } else {
         one.to_string()
       }
     });
     let hotkey_string = {
       if !modifier_string.is_empty() {
-        format!("{}-{}", modifier_string, self.key.to_string())
+        format!(
+          "{}+{}",
+          modifier_string,
+          self
+            .keys
+            .iter()
+            .map(|k| k.to_string())
+            .collect::<Vec<String>>()
+            .join("\"")
+        )
       } else {
-        self.key.to_string()
+        self
+          .keys
+          .iter()
+          .map(|k| k.to_string())
+          .collect::<Vec<String>>()
+          .join("\"")
       }
     };
     write!(f, "{}", hotkey_string)
@@ -366,83 +512,83 @@ mod tests {
     assert_eq!(
       parse_hotkey("CTRL+P").unwrap(),
       Hotkey {
-        modifier: vec![Modifier::CTRL],
-        key: Key::P
+        modifiers: vec![Modifier::CTRL],
+        keys: vec![Key::P]
       }
     );
     assert_eq!(
       parse_hotkey("CTRL+SHIFT+P").unwrap(),
       Hotkey {
-        modifier: vec![Modifier::CTRL, Modifier::SHIFT],
-        key: Key::P
+        modifiers: vec![Modifier::CTRL, Modifier::SHIFT],
+        keys: vec![Key::P]
       }
     );
     assert_eq!(
       parse_hotkey("S").unwrap(),
       Hotkey {
-        modifier: vec![],
-        key: Key::S
+        modifiers: vec![],
+        keys: vec![Key::S]
       }
     );
     assert_eq!(
       parse_hotkey("ALT+BACKSPACE").unwrap(),
       Hotkey {
-        modifier: vec![Modifier::ALT],
-        key: Key::BACKSPACE
+        modifiers: vec![Modifier::ALT],
+        keys: vec![Key::BACKSPACE]
       }
     );
     assert_eq!(
       parse_hotkey("SHIFT+SUPER+A").unwrap(),
       Hotkey {
-        modifier: vec![Modifier::SHIFT, Modifier::SUPER],
-        key: Key::A
+        modifiers: vec![Modifier::SHIFT, Modifier::SUPER],
+        keys: vec![Key::A]
       }
     );
     assert_eq!(
-      parse_hotkey("SUPER+ARROW_RIGHT").unwrap(),
+      parse_hotkey("SUPER+RIGHT").unwrap(),
       Hotkey {
-        modifier: vec![Modifier::SUPER],
-        key: Key::ARROW_RIGHT
+        modifiers: vec![Modifier::SUPER],
+        keys: vec![Key::RIGHT]
       }
     );
     assert_eq!(
       parse_hotkey("SUPER+CTRL+SHIFT+AltGr+9").unwrap(),
       Hotkey {
-        modifier: vec![
+        modifiers: vec![
           Modifier::SUPER,
           Modifier::CTRL,
           Modifier::SHIFT,
           Modifier::ALTGR
         ],
-        key: Key::KEY_9
+        keys: vec![Key::KEY_9]
       }
     );
     assert_eq!(
-      parse_hotkey("super+ctrl+SHIFT+alt+ARROW_Up").unwrap(),
+      parse_hotkey("super+ctrl+SHIFT+alt+Up").unwrap(),
       Hotkey {
-        modifier: vec![
+        modifiers: vec![
           Modifier::SUPER,
           Modifier::CTRL,
           Modifier::SHIFT,
           Modifier::ALT
         ],
-        key: Key::ARROW_UP
+        keys: vec![Key::UP]
       }
     );
 
     assert_eq!(
       parse_hotkey("5").unwrap(),
       Hotkey {
-        modifier: vec![],
-        key: Key::KEY_5
+        modifiers: vec![],
+        keys: vec![Key::KEY_5]
       }
     );
 
     assert_eq!(
       parse_hotkey("KEY_5").unwrap(),
       Hotkey {
-        modifier: vec![],
-        key: Key::KEY_5
+        modifiers: vec![],
+        keys: vec![Key::KEY_5]
       }
     );
 

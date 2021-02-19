@@ -40,10 +40,6 @@ pub mod keys {
   pub const CLEAR: u32 = keysym::XK_Clear;
   pub const INSERT: u32 = keysym::XK_Insert;
   pub const DELETE: u32 = keysym::XK_Delete;
-  pub const PAUSE: u32 = keysym::XK_Pause;
-  pub const CANCEL: u32 = keysym::XK_Cancel;
-  pub const SELECT: u32 = keysym::XK_Select;
-  pub const EXECUTE: u32 = keysym::XK_Execute;
   pub const SCROLL_LOCK: u32 = keysym::XK_Scroll_Lock;
   pub const HELP: u32 = keysym::XK_Help;
   pub const NUMLOCK: u32 = keysym::XK_Num_Lock;
@@ -74,7 +70,6 @@ pub mod keys {
   pub const SUBTRACT: u32 = keysym::XK_KP_Subtract;
   pub const MULTIPLY: u32 = keysym::XK_KP_Multiply;
   pub const DIVIDE: u32 = keysym::XK_KP_Divide;
-  pub const SEPERATOR: u32 = keysym::XK_KP_Separator;
   pub const DECIMAL: u32 = keysym::XK_KP_Decimal;
   pub const NUMPAD0: u32 = keysym::XK_KP_0;
   pub const NUMPAD1: u32 = keysym::XK_KP_1;
@@ -96,8 +91,6 @@ pub mod keys {
   pub const KEY_7: u32 = '7' as u32;
   pub const KEY_8: u32 = '8' as u32;
   pub const KEY_9: u32 = '9' as u32;
-  pub const EQUAL: u32 = keysym::XK_equal;
-  pub const MINUS: u32 = keysym::XK_minus;
   pub const A: u32 = 'A' as u32;
   pub const B: u32 = 'B' as u32;
   pub const C: u32 = 'C' as u32;
@@ -124,9 +117,17 @@ pub mod keys {
   pub const X: u32 = 'X' as u32;
   pub const Y: u32 = 'Y' as u32;
   pub const Z: u32 = 'Z' as u32;
-  pub const QUOTE: u32 = keysym::XK_leftsinglequotemark;
+  pub const EQUAL: u32 = keysym::XK_equal;
+  pub const MINUS: u32 = keysym::XK_minus;
+  pub const SINGLE_QUOTE: u32 = keysym::XK_leftsinglequotemark;
   pub const COMMA: u32 = keysym::XK_comma;
   pub const PERIOD: u32 = keysym::XK_period;
+  pub const SEMICOLON: u32 = keysym::XK_semicolon;
+  pub const SLASH: u32 = keysym::XK_slash;
+  pub const OPEN_QUOTE: u32 = keysym::XK_acute;
+  pub const OPEN_BRACKET: u32 = keysym::XK_bracketleft;
+  pub const BACK_SLASH: u32 = keysym::XK_backslash;
+  pub const CLOSE_BRACKET: u32 = keysym::XK_bracketright;
 }
 
 enum HotkeyMessage {

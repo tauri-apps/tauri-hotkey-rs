@@ -12,10 +12,11 @@ use std::{
 use super::traits::*;
 
 pub mod modifiers {
-  pub const ALT: u32 = 256;
-  pub const CONTROL: u32 = 4096;
-  pub const SHIFT: u32 = 512;
-  pub const SUPER: u32 = 2048;
+  pub const ALT: u32 = 58;
+  pub const ALT_GR: u32 = 61;
+  pub const CONTROL: u32 = 59;
+  pub const SHIFT: u32 = 57;
+  pub const SUPER: u32 = 55;
 }
 
 pub mod keys {
@@ -36,22 +37,19 @@ pub mod keys {
   pub const PRINT_SCREEN: u32 = 0xDEAD;
   pub const INSERT: u32 = 0x72;
   pub const DELETE: u32 = 0x75;
-  pub const PAUSE: u32 = 0;
-  pub const CANCEL: u32 = 0;
-  pub const SELECT: u32 = 0;
-  pub const EXECUTE: u32 = 0;
-  pub const SCROLL_LOCK: u32 = 0;
-  pub const HELP: u32 = 0;
+  pub const SCROLL_LOCK: u32 = 0x6B; // F14
+  pub const HELP: u32 = 0x72;
   pub const NUMLOCK: u32 = 0;
   // Media
-  pub const VOLUME_MUTE: u32 = 0;
-  pub const VOLUME_DOWN: u32 = 0;
-  pub const VOLUME_UP: u32 = 0;
-  pub const MEDIA_NEXT: u32 = 0;
+  pub const VOLUME_MUTE: u32 = 0x4A;
+  pub const VOLUME_DOWN: u32 = 0x49;
+  pub const VOLUME_UP: u32 = 0x48;
+  // TODO
+  /* pub const MEDIA_NEXT: u32 = 0;
   pub const MEDIA_PREV: u32 = 0;
   pub const MEDIA_STOP: u32 = 0;
   pub const MEDIA_PLAY_PAUSE: u32 = 0;
-  pub const LAUNCH_MAIL: u32 = 0;
+  pub const LAUNCH_MAIL: u32 = 0;*/
   // F1-F12
   pub const F1: u32 = 122;
   pub const F2: u32 = 120;
@@ -93,8 +91,6 @@ pub mod keys {
   pub const KEY_7: u32 = 0x1A;
   pub const KEY_8: u32 = 0x1C;
   pub const KEY_9: u32 = 0x19;
-  pub const EQUAL: u32 = 0x18;
-  pub const MINUS: u32 = 0x1B;
   pub const A: u32 = 0x00;
   pub const B: u32 = 0x0B;
   pub const C: u32 = 0x08;
@@ -121,9 +117,17 @@ pub mod keys {
   pub const X: u32 = 0x07;
   pub const Y: u32 = 0x10;
   pub const Z: u32 = 0x06;
-  pub const QUOTE: u32 = 0x27;
+  pub const EQUAL: u32 = 0x18;
+  pub const MINUS: u32 = 0x1B;
+  pub const SINGLE_QUOTE: u32 = 0x27;
   pub const COMMA: u32 = 0x2B;
   pub const PERIOD: u32 = 0x2F;
+  pub const SEMICOLON: u32 = 41;
+  pub const SLASH: u32 = 44;
+  pub const OPEN_QUOTE: u32 = 50;
+  pub const OPEN_BRACKET: u32 = 33;
+  pub const BACK_SLASH: u32 = 42;
+  pub const CLOSE_BRACKET: u32 = 30;
 }
 
 type KeyCallback = unsafe extern "C" fn(c_int, *mut c_void);
