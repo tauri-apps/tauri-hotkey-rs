@@ -364,14 +364,14 @@ mod tests {
   #[test]
   fn hotkey_parse() {
     assert_eq!(
-      parse_hotkey("CTRL-P").unwrap(),
+      parse_hotkey("CTRL+P").unwrap(),
       Hotkey {
         modifier: vec![Modifier::CTRL],
         key: Key::P
       }
     );
     assert_eq!(
-      parse_hotkey("CTRL-SHIFT-P").unwrap(),
+      parse_hotkey("CTRL+SHIFT+P").unwrap(),
       Hotkey {
         modifier: vec![Modifier::CTRL, Modifier::SHIFT],
         key: Key::P
@@ -385,40 +385,40 @@ mod tests {
       }
     );
     assert_eq!(
-      parse_hotkey("ALT-BACKSPACE").unwrap(),
+      parse_hotkey("ALT+BACKSPACE").unwrap(),
       Hotkey {
         modifier: vec![Modifier::ALT],
         key: Key::BACKSPACE
       }
     );
     assert_eq!(
-      parse_hotkey("SHIFT-SUPER-A").unwrap(),
+      parse_hotkey("SHIFT+SUPER+A").unwrap(),
       Hotkey {
         modifier: vec![Modifier::SHIFT, Modifier::SUPER],
         key: Key::A
       }
     );
     assert_eq!(
-      parse_hotkey("SUPER-ARROW_RIGHT").unwrap(),
+      parse_hotkey("SUPER+ARROW_RIGHT").unwrap(),
       Hotkey {
         modifier: vec![Modifier::SUPER],
         key: Key::ARROW_RIGHT
       }
     );
     assert_eq!(
-      parse_hotkey("SUPER-CTRL-SHIFT-ALT-9").unwrap(),
+      parse_hotkey("SUPER+CTRL+SHIFT+AltGr+9").unwrap(),
       Hotkey {
         modifier: vec![
           Modifier::SUPER,
           Modifier::CTRL,
           Modifier::SHIFT,
-          Modifier::ALT
+          Modifier::ALTGR
         ],
         key: Key::KEY_9
       }
     );
     assert_eq!(
-      parse_hotkey("super-ctrl-SHIFT-alt-ARROW_Up").unwrap(),
+      parse_hotkey("super+ctrl+SHIFT+alt+ARROW_Up").unwrap(),
       Hotkey {
         modifier: vec![
           Modifier::SUPER,
@@ -447,18 +447,18 @@ mod tests {
     );
 
     assert_eq!(
-      parse_hotkey("5-5").unwrap_err().to_string(),
-      "No valid hotkey match"
+      parse_hotkey("5+5").unwrap_err().to_string(),
+      "failed to parse hotkey: regex dind't match"
     );
 
     assert_eq!(
-      parse_hotkey("CTRL-").unwrap_err().to_string(),
-      "No valid hotkey match"
+      parse_hotkey("CTRL+").unwrap_err().to_string(),
+      "failed to parse hotkey: regex dind't match"
     );
 
     assert_eq!(
       parse_hotkey("").unwrap_err().to_string(),
-      "No valid hotkey match"
+      "failed to parse hotkey: regex dind't match"
     );
   }
 }
