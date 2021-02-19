@@ -12,8 +12,9 @@ use x11_dl::xlib;
 use super::traits::*;
 
 pub mod modifiers {
-  use x11_dl::xlib;
+  use x11_dl::{keysym, xlib};
   pub const ALT: u32 = xlib::Mod1Mask;
+  pub const ALT_GR: u32 = keysym::XK_Alt_R;
   pub const CONTROL: u32 = xlib::ControlMask;
   pub const SHIFT: u32 = xlib::ShiftMask;
   pub const SUPER: u32 = xlib::Mod4Mask;
@@ -36,8 +37,55 @@ pub mod keys {
   pub const ARROW_UP: u32 = keysym::XK_Up;
   pub const ARROW_DOWN: u32 = keysym::XK_Down;
   pub const PRINT_SCREEN: u32 = keysym::XK_Print;
+  pub const CLEAR: u32 = keysym::XK_Clear;
   pub const INSERT: u32 = keysym::XK_Insert;
   pub const DELETE: u32 = keysym::XK_Delete;
+  pub const PAUSE: u32 = keysym::XK_Pause;
+  pub const CANCEL: u32 = keysym::XK_Cancel;
+  pub const SELECT: u32 = keysym::XK_Select;
+  pub const EXECUTE: u32 = keysym::XK_Execute;
+  pub const SCROLL_LOCK: u32 = keysym::XK_Scroll_Lock;
+  pub const HELP: u32 = keysym::XK_Help;
+  pub const NUMLOCK: u32 = keysym::XK_Num_Lock;
+  // Media
+  pub const VOLUME_MUTE: u32 = keysym::XF86XK_AudioMute;
+  pub const VOLUME_DOWN: u32 = keysym::XF86XK_AudioLowerVolume;
+  pub const VOLUME_UP: u32 = keysym::XF86XK_AudioRaiseVolume;
+  pub const MEDIA_NEXT: u32 = keysym::XF86XK_AudioNext;
+  pub const MEDIA_PREV: u32 = keysym::XF86XK_AudioPrev;
+  pub const MEDIA_STOP: u32 = keysym::XF86XK_AudioStop;
+  pub const MEDIA_PLAY_PAUSE: u32 = keysym::XF86XK_AudioPlay;
+  pub const LAUNCH_MAIL: u32 = keysym::XF86XK_Mail;
+  // F1-F12
+  pub const F1: u32 = keysym::XK_F1;
+  pub const F2: u32 = keysym::XK_F2;
+  pub const F3: u32 = keysym::XK_F3;
+  pub const F4: u32 = keysym::XK_F4;
+  pub const F5: u32 = keysym::XK_F5;
+  pub const F6: u32 = keysym::XK_F6;
+  pub const F7: u32 = keysym::XK_F7;
+  pub const F8: u32 = keysym::XK_F8;
+  pub const F9: u32 = keysym::XK_F9;
+  pub const F10: u32 = keysym::XK_F10;
+  pub const F11: u32 = keysym::XK_F11;
+  pub const F12: u32 = keysym::XK_F12;
+  // Numpad
+  pub const ADD: u32 = keysym::XK_KP_Add;
+  pub const SUBTRACT: u32 = keysym::XK_KP_Subtract;
+  pub const MULTIPLY: u32 = keysym::XK_KP_Multiply;
+  pub const DIVIDE: u32 = keysym::XK_KP_Divide;
+  pub const SEPERATOR: u32 = keysym::XK_KP_Separator;
+  pub const DECIMAL: u32 = keysym::XK_KP_Decimal;
+  pub const NUMPAD0: u32 = keysym::XK_KP_0;
+  pub const NUMPAD1: u32 = keysym::XK_KP_1;
+  pub const NUMPAD2: u32 = keysym::XK_KP_2;
+  pub const NUMPAD3: u32 = keysym::XK_KP_3;
+  pub const NUMPAD4: u32 = keysym::XK_KP_4;
+  pub const NUMPAD5: u32 = keysym::XK_KP_5;
+  pub const NUMPAD6: u32 = keysym::XK_KP_6;
+  pub const NUMPAD7: u32 = keysym::XK_KP_7;
+  pub const NUMPAD8: u32 = keysym::XK_KP_8;
+  pub const NUMPAD9: u32 = keysym::XK_KP_9;
   pub const KEY_0: u32 = '0' as u32;
   pub const KEY_1: u32 = '1' as u32;
   pub const KEY_2: u32 = '2' as u32;
@@ -48,6 +96,8 @@ pub mod keys {
   pub const KEY_7: u32 = '7' as u32;
   pub const KEY_8: u32 = '8' as u32;
   pub const KEY_9: u32 = '9' as u32;
+  pub const EQUAL: u32 = keysym::XK_equal;
+  pub const MINUS: u32 = keysym::XK_minus;
   pub const A: u32 = 'A' as u32;
   pub const B: u32 = 'B' as u32;
   pub const C: u32 = 'C' as u32;
@@ -74,6 +124,9 @@ pub mod keys {
   pub const X: u32 = 'X' as u32;
   pub const Y: u32 = 'Y' as u32;
   pub const Z: u32 = 'Z' as u32;
+  pub const QUOTE: u32 = keysym::XK_leftsinglequotemark;
+  pub const COMMA: u32 = keysym::XK_comma;
+  pub const PERIOD: u32 = keysym::XK_period;
 }
 
 enum HotkeyMessage {

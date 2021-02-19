@@ -146,7 +146,7 @@ impl Drop for HotkeyManager {
 
 static REGEX_HOTKEY_PATTERN: Lazy<regex::Regex> = Lazy::new(|| {
   regex::Regex::new(
-        r"^(?i)(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|SUPER)\+){0,1}(\w+)$",
+        r"^(?i)(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(\w+)$",
     ).unwrap()
 });
 
@@ -203,6 +203,7 @@ impl Hotkey {
 #[repr(u32)]
 pub enum Modifier {
   ALT = modifiers::ALT,
+  ALTGR = modifiers::ALT_GR,
   CTRL = modifiers::CONTROL,
   SHIFT = modifiers::SHIFT,
   SUPER = modifiers::SUPER,
@@ -236,7 +237,44 @@ pub enum Key {
   ARROW_DOWN = keys::ARROW_DOWN,
   PRINT_SCREEN = keys::PRINT_SCREEN,
   INSERT = keys::INSERT,
+  CLEAR = keys::CLEAR,
   DELETE = keys::DELETE,
+  PAUSE = keys::PAUSE,
+  CANCEL = keys::CANCEL,
+  SELECT = keys::SELECT,
+  EXECUTE = keys::EXECUTE,
+  SCROLL_LOCK = keys::SCROLL_LOCK,
+  HELP = keys::HELP,
+  NUMLOCK = keys::NUMLOCK,
+  // Media
+  VOLUMEMUTE = keys::VOLUME_MUTE,
+  VOLUMEDOWN = keys::VOLUME_DOWN,
+  VOLUMEUP = keys::VOLUME_UP,
+  MEDIANEXT = keys::MEDIA_NEXT,
+  MEDIAPREV = keys::MEDIA_PREV,
+  MEDIASTOP = keys::MEDIA_STOP,
+  MEDIAPLAYPAUSE = keys::MEDIA_PLAY_PAUSE,
+  LAUNCHMAIL = keys::LAUNCH_MAIL,
+  // F1-F12
+  F1 = keys::F1,
+  F2 = keys::F2,
+  F3 = keys::F3,
+  F4 = keys::F4,
+  F5 = keys::F5,
+  F6 = keys::F6,
+  F7 = keys::F7,
+  F8 = keys::F8,
+  F9 = keys::F9,
+  F10 = keys::F10,
+  F11 = keys::F11,
+  F12 = keys::F12,
+  // Numpad
+  ADD = keys::ADD,
+  SUBTRACT = keys::SUBTRACT,
+  MULTIPLY = keys::MULTIPLY,
+  DIVIDE = keys::DIVIDE,
+  SEPERATOR = keys::SEPERATOR,
+  DECIMAL = keys::DECIMAL,
   #[serde(rename = "0")]
   KEY_0 = keys::KEY_0,
   #[serde(rename = "1")]
@@ -257,6 +295,8 @@ pub enum Key {
   KEY_8 = keys::KEY_8,
   #[serde(rename = "9")]
   KEY_9 = keys::KEY_9,
+  EQUAL = keys::EQUAL,
+  MINUS = keys::MINUS,
   A = keys::A,
   B = keys::B,
   C = keys::C,
@@ -283,6 +323,12 @@ pub enum Key {
   X = keys::X,
   Y = keys::Y,
   Z = keys::Z,
+  #[serde(rename = "'")]
+  QUOTE = keys::QUOTE,
+  #[serde(rename = ",")]
+  COMMA = keys::COMMA,
+  #[serde(rename = ".")]
+  PERIOD = keys::PERIOD,
 }
 
 impl fmt::Display for Key {
