@@ -144,144 +144,184 @@ impl Drop for HotkeyManager {
   }
 }
 
-static REGEX_HOTKEY_PATTERN: Lazy<regex::Regex> = Lazy::new(|| {
-  regex::Regex::new(
-        r"^(?i)(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(?:(CTRL|SHIFT|ALT|ALTGR|SUPER)\+){0,1}(\w+)$",
-    ).unwrap()
-});
-
 pub fn parse_hotkey(hotkey_string: &str) -> Result<Hotkey> {
-  let caps: regex::Captures = REGEX_HOTKEY_PATTERN
-    .captures(hotkey_string)
-    .ok_or_else(|| Error::InvalidHotkey("regex dind't match".to_string()))?;
   let mut modifiers = Vec::new();
   let mut keys = Vec::new();
   let mut shifted = false;
-  for caps in caps.iter().skip(1) {
-    if let Some(caps) = caps {
-      let mut mat = caps.as_str().to_uppercase();
-      if mat.parse::<usize>().is_ok() {
-        mat = format!("KEY_{}", mat);
-      }
-      if let Ok(res) = Modifier::from_str(&mat) {
-        modifiers.push(res);
+  for raw in hotkey_string.to_uppercase().split('+') {
+    let mut token = raw.trim().to_string();
+    if token.is_empty() {
+      continue;
+    }
+
+    match token.as_str() {
+      // command aliases
+      "COMMAND" | "CMD" => {
+        modifiers.push(Modifier::SUPER);
         continue;
       }
-      let mut key = None;
-      // shift conversions
-      match mat.as_str() {
-        ")" => {
-          shifted = true;
-          key = Some(Key::KEY_0);
-        }
-        "!" => {
-          shifted = true;
-          key = Some(Key::KEY_1);
-        }
-        "@" => {
-          shifted = true;
-          key = Some(Key::KEY_2);
-        }
-        "#" => {
-          shifted = true;
-          key = Some(Key::KEY_3);
-        }
-        "$" => {
-          shifted = true;
-          key = Some(Key::KEY_4);
-        }
-        "%" => {
-          shifted = true;
-          key = Some(Key::KEY_5);
-        }
-        "^" => {
-          shifted = true;
-          key = Some(Key::KEY_6);
-        }
-        "&" => {
-          shifted = true;
-          key = Some(Key::KEY_7);
-        }
-        "*" => {
-          shifted = true;
-          key = Some(Key::KEY_8);
-        }
-        "(" => {
-          shifted = true;
-          key = Some(Key::KEY_9);
-        }
-        ":" => {
-          shifted = true;
-          key = Some(Key::SEMICOLON);
-        }
-        "<" => {
-          shifted = true;
-          key = Some(Key::COMMA);
-        }
-        ">" => {
-          shifted = true;
-          key = Some(Key::PERIOD);
-        }
-        "_" => {
-          shifted = true;
-          key = Some(Key::MINUS);
-        }
-        "?" => {
-          shifted = true;
-          key = Some(Key::SLASH);
-        }
-        "~" => {
-          shifted = true;
-          key = Some(Key::OPENQUOTE);
-        }
-        "{" => {
-          shifted = true;
-          key = Some(Key::OPENBRACKET)
-        }
-        "|" => {
-          shifted = true;
-          key = Some(Key::BACKSLASH);
-        }
-        "}" => {
-          shifted = true;
-          key = Some(Key::CLOSEBRACKET);
-        }
-        "+" | "PLUS" => {
-          shifted = true;
-          key = Some(Key::EQUAL);
-        }
-        "\"" => {
-          shifted = true;
-          key = Some(Key::SINGLEQUOTE);
-        }
-        _ => {}
+      "CONTROL" => {
+        modifiers.push(Modifier::CTRL);
+        continue;
       }
-
-      // aliases
-      if key.is_none() {
-        key = match mat.as_str() {
-          "RETURN" => Some(Key::ENTER),
-          "=" => Some(Key::EQUAL),
-          "-" => Some(Key::MINUS),
-          "'" => Some(Key::SINGLEQUOTE),
-          "," => Some(Key::COMMA),
-          "." => Some(Key::PERIOD),
-          ";" => Some(Key::SEMICOLON),
-          "/" => Some(Key::SLASH),
-          "`" => Some(Key::OPENQUOTE),
-          "[" => Some(Key::OPENBRACKET),
-          "\\" => Some(Key::BACKSLASH),
-          "]" => Some(Key::CLOSEBRACKET),
-          _ => None,
-        };
+      #[cfg(target_os = "macos")]
+      "OPTION" => {
+        modifiers.push(Modifier::ALT);
+        continue;
       }
+      "COMMANDORCONTROL" | "CMDORCTRL" => {
+        #[cfg(target_os = "macos")]
+        modifiers.push(Modifier::SUPER);
+        #[cfg(not(target_os = "macos"))]
+        modifiers.push(Modifier::CTRL);
+        continue;
+      }
+      _ => {
+        if let Ok(res) = Modifier::from_str(&token) {
+          modifiers.push(res);
+          continue;
+        }
+      }
+    }
 
-      match key {
-        Some(key) => keys.push(key),
-        None => {
-          if let Ok(res) = Key::from_str(&mat) {
-            keys.push(res);
+    let mut key = None;
+
+    if token.parse::<usize>().is_ok() {
+      token = format!("KEY_{}", token);
+    }
+
+    // shift conversions
+    match token.as_str() {
+      ")" => {
+        shifted = true;
+        key = Some(Key::KEY_0);
+      }
+      "!" => {
+        shifted = true;
+        key = Some(Key::KEY_1);
+      }
+      "@" => {
+        shifted = true;
+        key = Some(Key::KEY_2);
+      }
+      "#" => {
+        shifted = true;
+        key = Some(Key::KEY_3);
+      }
+      "$" => {
+        shifted = true;
+        key = Some(Key::KEY_4);
+      }
+      "%" => {
+        shifted = true;
+        key = Some(Key::KEY_5);
+      }
+      "^" => {
+        shifted = true;
+        key = Some(Key::KEY_6);
+      }
+      "&" => {
+        shifted = true;
+        key = Some(Key::KEY_7);
+      }
+      "*" => {
+        shifted = true;
+        key = Some(Key::KEY_8);
+      }
+      "(" => {
+        shifted = true;
+        key = Some(Key::KEY_9);
+      }
+      ":" => {
+        shifted = true;
+        key = Some(Key::SEMICOLON);
+      }
+      "<" => {
+        shifted = true;
+        key = Some(Key::COMMA);
+      }
+      ">" => {
+        shifted = true;
+        key = Some(Key::PERIOD);
+      }
+      "_" => {
+        shifted = true;
+        key = Some(Key::MINUS);
+      }
+      "?" => {
+        shifted = true;
+        key = Some(Key::SLASH);
+      }
+      "~" => {
+        shifted = true;
+        key = Some(Key::OPENQUOTE);
+      }
+      "{" => {
+        shifted = true;
+        key = Some(Key::OPENBRACKET)
+      }
+      "|" => {
+        shifted = true;
+        key = Some(Key::BACKSLASH);
+      }
+      "}" => {
+        shifted = true;
+        key = Some(Key::CLOSEBRACKET);
+      }
+      "+" | "PLUS" => {
+        shifted = true;
+        key = Some(Key::EQUAL);
+      }
+      "\"" => {
+        shifted = true;
+        key = Some(Key::SINGLEQUOTE);
+      }
+      _ => {}
+    }
+
+    // aliases
+    if key.is_none() {
+      key = match token.as_str() {
+        "RETURN" => Some(Key::ENTER),
+        "=" => Some(Key::EQUAL),
+        "-" => Some(Key::MINUS),
+        "'" => Some(Key::SINGLEQUOTE),
+        "," => Some(Key::COMMA),
+        "." => Some(Key::PERIOD),
+        ";" => Some(Key::SEMICOLON),
+        "/" => Some(Key::SLASH),
+        "`" => Some(Key::OPENQUOTE),
+        "[" => Some(Key::OPENBRACKET),
+        "\\" => Some(Key::BACKSLASH),
+        "]" => Some(Key::CLOSEBRACKET),
+        _ => None,
+      };
+    }
+
+    match key {
+      Some(key) => {
+        if keys.contains(&key) {
+          return Err(crate::Error::InvalidHotkey(format!(
+            "duplicated key {}",
+            raw
+          )));
+        }
+        keys.push(key);
+      }
+      None => {
+        if let Ok(key) = Key::from_str(&token) {
+          if keys.contains(&key) {
+            return Err(crate::Error::InvalidHotkey(format!(
+              "duplicated key {}",
+              raw
+            )));
           }
+          keys.push(key);
+        } else {
+          return Err(crate::Error::InvalidHotkey(format!(
+            "unknown key {}",
+            token
+          )));
         }
       }
     }
@@ -596,17 +636,17 @@ mod tests {
 
     assert_eq!(
       parse_hotkey("5+5").unwrap_err().to_string(),
-      "failed to parse hotkey: regex dind't match"
+      "failed to parse hotkey: duplicated key 5"
     );
 
     assert_eq!(
       parse_hotkey("CTRL+").unwrap_err().to_string(),
-      "failed to parse hotkey: regex dind't match"
+      "failed to parse hotkey: hotkey has no key specified"
     );
 
     assert_eq!(
       parse_hotkey("").unwrap_err().to_string(),
-      "failed to parse hotkey: regex dind't match"
+      "failed to parse hotkey: hotkey has no key specified"
     );
   }
 }
