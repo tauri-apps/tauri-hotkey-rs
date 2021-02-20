@@ -174,7 +174,7 @@ pub fn parse_hotkey(hotkey_string: &str) -> Result<Hotkey> {
         modifiers.push(Modifier::ALT);
         continue;
       }
-      "COMMANDORCONTROL" | "CMDORCTRL" => {
+      "COMMANDORCONTROL" | "COMMANDORCTRL" | "CMDORCTRL" | "CMDORCONTROL" => {
         #[cfg(target_os = "macos")]
         modifiers.push(Modifier::SUPER);
         #[cfg(not(target_os = "macos"))]
