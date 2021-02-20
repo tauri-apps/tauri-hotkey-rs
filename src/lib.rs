@@ -57,11 +57,16 @@ impl HotkeyManager {
     Default::default()
   }
 
+  /// Determines whether the given hotkey is registered or not.
+  pub fn is_registered(&self, hotkey: &Hotkey) -> bool {
+    self.registered_hotkeys.contains(&hotkey)
+  }
+
   pub fn register<F>(&mut self, hotkey: Hotkey, callback: F) -> Result<()>
   where
     F: 'static + FnMut() + Send,
   {
-    if self.registered_hotkeys.contains(&hotkey) {
+    if self.is_registered(&hotkey) {
       return Err(Error::HotkeyAlreadyRegistered(hotkey));
     }
 
