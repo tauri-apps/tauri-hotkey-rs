@@ -1,0 +1,36 @@
+{
+  "pkgManagers": {
+    "rust": {
+      "version": true,
+      "getPublishedVersion": "cargo search ${ pkg.pkg } --limit 1 | sed -nE 's/^[^\"]*\"//; s/\".*//1p' -",
+      "prepublishRoot": [
+        "cargo generate-lockfile",
+        "cargo install cargo-audit",
+        "echo \"# Cargo Audit\" | tee -a ../notes.md",
+        "echo \"\\`\\`\\`\" >> ../notes.md",
+        "cargo audit 2>&1 | tee -a ../notes.md",
+        "echo \"\\`\\`\\`\" >> ../notes.md"
+      ],
+      "prepublish": [
+        "cargo package --no-verify",
+        "echo \"# Cargo Publish\" | tee -a ../notes.md",
+        "echo \"\\`\\`\\`\" >> ../notes.md"
+      ],
+      "publish": "bash -c 'set -o pipefail && cargo publish --no-verify --allow-dirty 2>&1 | tee -a ../notes.md'",
+      "postpublish": "echo \"\\`\\`\\`\" >> ../notes.md"
+    }
+  },
+  "packages": {
+    "crate": {
+      "path": ".",
+      "manager": "rust",
+      "dependencies": [
+        "sys"
+      ]
+    },
+    "sys": {
+      "path": "./tauri-hotkey-sys",
+      "manager": "rust"
+    }
+  }
+}

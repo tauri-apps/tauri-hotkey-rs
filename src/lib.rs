@@ -360,6 +360,7 @@ impl Hotkey {
   }
 }
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(
   Debug, Deserialize, Copy, Clone, Serialize, strum_macros::EnumString, PartialEq, Hash, Eq,
 )]
@@ -378,7 +379,7 @@ impl fmt::Display for Modifier {
   }
 }
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, clippy::upper_case_acronyms)]
 #[derive(
   Debug, Deserialize, Copy, Clone, Serialize, strum_macros::EnumString, PartialEq, Hash, Eq,
 )]
