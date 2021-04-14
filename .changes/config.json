@@ -21,16 +21,16 @@
     }
   },
   "packages": {
+    "sys": {
+      "path": "./tauri-hotkey-sys",
+      "manager": "rust"
+    },
     "crate": {
       "path": ".",
       "manager": "rust",
       "dependencies": [
         "sys"
       ]
-    },
-    "sys": {
-      "path": "./tauri-hotkey-sys",
-      "manager": "rust"
     }
   }
 }
