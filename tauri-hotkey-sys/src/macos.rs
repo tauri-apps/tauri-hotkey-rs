@@ -12,11 +12,11 @@ use std::{
 use super::traits::*;
 
 pub mod modifiers {
-  pub const ALT: u32 = 58;
-  pub const ALT_GR: u32 = 61;
-  pub const CONTROL: u32 = 59;
-  pub const SHIFT: u32 = 57;
-  pub const SUPER: u32 = 55;
+  pub const ALT: u32 = 2048;
+  pub const ALT_GR: u32 = 16384;
+  pub const CONTROL: u32 = 4096;
+  pub const SHIFT: u32 = 512;
+  pub const SUPER: u32 = 256;
 }
 
 pub mod keys {
