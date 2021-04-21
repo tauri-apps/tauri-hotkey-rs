@@ -7,3 +7,6 @@ This crate provides cross platform APIs to register keyboard hotkeys. This is a 
 - Linux
 - macOS
 - Windows
+
+## License
+MIT
