@@ -183,7 +183,7 @@ impl HotkeyListener for Listener {
           }
           match thread_receiver.try_recv() {
             Ok(HotkeyMessage::RegisterHotkey(_, modifiers, key)) => {
-              let keycode = (xlib.XKeysymToKeycode)(display, key as u64) as i32;
+              let keycode = (xlib.XKeysymToKeycode)(display, key.into()) as i32;
 
               let result = (xlib.XGrabKey)(
                 display,
