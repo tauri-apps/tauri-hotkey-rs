@@ -1,5 +1,10 @@
 # Changelog
 
+## \[0.1.2]
+
+- Don't force using u64 in non-x64 platforms
+  - [d793de6](/commit/d793de643361bcb53cca03d86145bebb823a7a61) Don't force using u64 in non-x64 platforms on 2021-05-04
+
 ## \[0.1.1]
 
 - Fixes the macOS modifiers keycodes.
